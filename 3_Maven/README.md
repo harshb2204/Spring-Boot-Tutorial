@@ -109,4 +109,8 @@ Parent POM is used to inherit configurations from another project:
 - Provides pre-configured dependencies and plugins
 - Enables version management across multiple modules
 
-
+## Maven Build Lifecycle Phases
+-If you want to run "package" phase all the phases before "package" will be executed automatically.
+-And if you want run specific goal of a particular phase, then all the goals of previous phases + current phase goals before the one you defined will get run.
+![Build Phases](/images/mavenbuildphases.png)
+![Build Phases](/images/mvncompile.png)
