@@ -46,28 +46,24 @@ Authorization is the process of verifying what specific applications, files, and
 - Django Authentication (for Python)
 
 ## JSON Web Tokens (JWT)
-JSON Web Tokens are an open standard (RFC 7519) for securely transmitting information between parties as a JSON object. They are commonly used for authentication and information exchange.
+JSON Web Tokens use public/private key pairs that are mathematically related. The public key can only verify tokens, not create them. Signing the token means you can store information like user_id in the token, and it cannot be tampered with without having the private key.
 
 ### Advantages of JWT
-1. **Stateless Authentication**: No need to store session information on the server
-2. **Cross-domain/CORS**: Can be used across different domains
-3. **Performance**: Reduces database lookups as token contains user information
-4. **Decentralized**: Can be validated without accessing a central server
-5. **Mobile-friendly**: Works well with native mobile apps
-6. **Flexibility**: Can include custom claims and metadata
+1. **Easy Verification**: No datastore needed to store prerequisites for token verification
+2. **Expiration Control**: Can set expiration date which allows consumers to verify based on TTL
+3. **Performance**: Verifying tokens involves only CPU cycles, not any I/O from the user
 
 ### Disadvantages of JWT
-1. **Token Size**: JWTs are larger than session tokens, increasing bandwidth usage
-2. **Can't Revoke Individual Tokens**: Once issued, tokens remain valid until expiration
-3. **Token Storage**: Must be stored securely on client-side to prevent XSS attacks
-4. **Secret Key Management**: Server's secret key must be well-protected
-5. **Token Expiration**: Balance needed between security (shorter expiry) and user experience (longer expiry)
-6. **Payload Size**: Limited by URL length in GET requests if used in query parameters
+1. **No Instant Invalidation**: Cannot invalidate or ban a user instantly because we have to mark the user_id or JWT id as banned in our datastore, or wait for token expiration since it's stored on client side
+2. **Size Impact**: Adding new fields in JWT will increase its size and would have network impact if it has to be sent on each request
 
-### Security Considerations
-1. Never store sensitive information in JWT payload (it's base64 encoded, not encrypted)
-2. Use HTTPS to prevent token interception
-3. Implement proper token expiration
-4. Consider using refresh tokens for long-term authentication
-5. Validate all tokens on the server side
-6. Use strong secret keys for signing
+### Opaque Tokens
+An alternative approach where it doesn't store any information like user_id in the token. Instead, it stores the primary key of the DB itself that points to the entry of the user having information about the user. In this case, we can use fast retrieval DBs like redis.
+
+#### Advantages of Opaque Tokens
+1. **Simple Authorization**: It is simple and effective in authorization also to get an idea of the resources that a user can access
+2. **Network Efficiency**: It doesn't store the fields or used data in itself so having less network impact
+
+#### Disadvantages of Opaque Tokens
+1. **Infrastructure Requirements**: Might need to maintain a auth service or a dedicated server to do all the auth stuff which is not the case with JWT because JWT can be verified without maintaining any datastore
+
