@@ -67,3 +67,47 @@ An alternative approach where it doesn't store any information like user_id in t
 #### Disadvantages of Opaque Tokens
 1. **Infrastructure Requirements**: Might need to maintain a auth service or a dedicated server to do all the auth stuff which is not the case with JWT because JWT can be verified without maintaining any datastore
 
+## Refresh and Access Tokens
+
+### Access Tokens
+- Short-lived tokens (usually 15-60 minutes)
+- Used to authenticate API requests
+- Carried in Authorization header
+- Contains user identity and permissions
+- Should be kept secure in memory only
+
+### Refresh Tokens
+- Long-lived tokens (days/weeks)
+- Used to obtain new access tokens
+- Should be stored securely (HTTP-only cookies)
+- Can be revoked by the server
+- Helps implement "Remember Me" functionality
+
+### Token Flow
+1. User logs in with credentials
+2. Server provides both access and refresh tokens
+3. Client uses access token for API requests
+4. When access token expires:
+   - Client uses refresh token to get new access token
+   - If refresh token is valid, server issues new access token
+   - If refresh token is expired, user must log in again
+
+### Security Considerations
+1. **Access Token Security**
+   - Never store in localStorage/sessionStorage
+   - Keep in memory only
+   - Clear on page refresh/close
+
+2. **Refresh Token Security**
+   - Store in HTTP-only cookies
+   - Include secure and sameSite flags
+   - Implement token rotation
+   - Maintain token blacklist for revoked tokens
+
+3. **Best Practices**
+   - Implement token rotation
+   - Use short expiry for access tokens
+   - Enable refresh token reuse detection
+   - Maintain server-side session records
+   - Implement proper logout mechanism
+
