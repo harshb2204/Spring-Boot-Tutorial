@@ -113,4 +113,62 @@ Parent POM is used to inherit configurations from another project:
 -If you want to run "package" phase all the phases before "package" will be executed automatically.
 -And if you want run specific goal of a particular phase, then all the goals of previous phases + current phase goals before the one you defined will get run.
 ![Build Phases](/images/mavenbuildphases.png)
-![Build Phases](/images/mvncompile.png)
+### mvn compile
+![mvncompile](/images/mvncompile.png)
+
+
+### mvn test
+![mvntest](/images/mvntest.png)
+
+### mvn package
+![mvntest](/images/mvnpackage.png)
+
+## Static Code Analysis
+
+Maven can perform additional checks apart from unit test cases:
+- STATIC CODE ANALYSIS
+- CHECKSUM VERIFICATION etc...
+
+### PMD Plugin Configuration
+```xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-pmd-plugin</artifactId>
+    <version>3.21.2</version>
+    <executions>
+        <execution>
+            <id>pmd-analysis</id>
+            <phase>verify</phase>
+            <goals>
+                <goal>pmd</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+```
+
+### PMD Source Code Analyzer Features
+PMD is a source code analyzer that can detect various code issues:
+- Finds unused variables
+- Finds unused imports
+- Empty Catch block detection
+- No usage of object warnings
+- Finds duplicate code etc...
+
+
+### mvn install
+The install command will install the JAR package in local Maven Repository, which is typically located in your user home directory (`~/.m2/repository`)
+
+### settings.xml Configuration
+The local repository location is defined in the settings.xml file (in .m2 folder):
+
+```xml
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+          http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    
+    <!-- Local Repository: Location where Maven stores downloaded artifacts -->
+    <localRepository>${user.home}/.m2/repository</localRepository>
+</settings>
+```
