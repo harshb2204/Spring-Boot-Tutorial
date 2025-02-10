@@ -104,10 +104,4 @@ An alternative approach where it doesn't store any information like user_id in t
    - Implement token rotation
    - Maintain token blacklist for revoked tokens
 
-3. **Best Practices**
-   - Implement token rotation
-   - Use short expiry for access tokens
-   - Enable refresh token reuse detection
-   - Maintain server-side session records
-   - Implement proper logout mechanism
 

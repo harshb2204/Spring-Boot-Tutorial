@@ -172,3 +172,8 @@ The local repository location is defined in the settings.xml file (in .m2 folder
     <localRepository>${user.home}/.m2/repository</localRepository>
 </settings>
 ```
+
+
+### mvn deploy
+- it will deploy  the .jar remote repo
+![mvndeploy](/images/mvndeploy.png)
