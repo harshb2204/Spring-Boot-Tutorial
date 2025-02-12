@@ -211,4 +211,55 @@ public class Order {
     }
 }
 ```
+### Bean Lifecycle
+![beanlifecycle](/images/beanlifecycle.png)
+
+## Spring Bean Lifecycle
+
+1️⃣ **Application Start**  
+The Spring application starts, and the Spring Context (IOC container) begins initialization.  
+The container reads configuration files (application.properties, application.yml, or Java-based configurations).
+
+2️⃣ **IOC Container Started**  
+The IOC (Inversion of Control) container is created and initialized.  
+The container scans for beans, components, services, and configurations.  
+Configuration files and annotations (@ComponentScan, @Configuration, etc.) are processed.
+
+3️⃣ **Construct Bean**  
+Spring creates an instance of the bean using reflection.  
+If a bean is defined with @Component, @Service, @Repository, or explicitly via @Bean in a configuration class, the container instantiates the bean.  
+This is done using the default constructor or a parameterized constructor with @Autowired dependencies.
+
+4️⃣ **Inject Dependency Into Constructed Bean**  
+After creating the bean, Spring injects its required dependencies.  
+This can be done via:
+- Constructor Injection (@Autowired on a constructor).
+- Setter Injection (Spring calls setter methods).
+- Field Injection (@Autowired on a field).
+
+5️⃣ **@PostConstruct (Initialization Hook)**  
+If the bean has a method annotated with @PostConstruct, this method is executed after dependency injection is completed.  
+This method is commonly used for:
+- Initializing resources.
+- Running setup logic.
+- Performing sanity checks.
+
+6️⃣ **Use the Bean**  
+The bean is now fully initialized and ready to be used in the application.  
+It can be accessed via dependency injection in controllers, services, or other components.
+
+7️⃣ **@PreDestroy (Cleanup Hook)**  
+If a bean has a method annotated with @PreDestroy, it runs before the bean is destroyed.  
+This is useful for:
+- Closing database connections.
+- Releasing resources (files, sockets, threads).
+- Logging cleanup actions.
+
+8️⃣ **Bean Destroyed**  
+The Spring container removes the bean from memory when it's no longer needed.  
+This happens during:
+- Application shutdown (context.close()).
+- Scope-based lifecycle completion (e.g., request-scoped beans in a web app).
+
+
 
