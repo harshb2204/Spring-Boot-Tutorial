@@ -58,5 +58,26 @@ It breaks the Dependency Inversion rule of the S.O.L.I.D principle.
    }
    ```
 
-## Conclusion
-This highlights the importance of using Dependency Injection to maintain flexibility and reduce the need for changes in dependent classes while adhering to the Dependency Inversion Principle.
+   This principle says that DO NOT depend on concrete implementation, rather depends on abstraction.
+
+## Achieving Dependency Inversion Principle in Spring Boot
+
+- Using Dependency Injection, we can make our class independent of its dependencies.
+- It helps to remove the dependency on concrete implementation and inject the dependencies from an external source.
+
+```java
+@Component
+public class User {
+    @Autowired
+    Order order;
+}
+```
+
+```java
+@Component
+public class Order {
+}
+```
+
+- `@Autowired` first looks for a bean of the required type.
+  - If a bean is found, Spring will inject it.
