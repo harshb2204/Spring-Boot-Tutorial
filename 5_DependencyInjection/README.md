@@ -252,3 +252,20 @@ public class Order {
     }
 }
 ```
+## Why Constructor Injection is Recommended (Advantages):
+
+1. **All mandatory dependencies are created at the time of initialization itself.** 
+   - Makes 100% sure that our object is fully initialized with mandatory dependencies.
+     - Avoid NPE during runtime.
+     - Unnecessary null checks can be avoided too.
+
+2. **We can create immutable objects using Constructor injection.**
+
+3. **Fail Fast:** 
+   - If there is any missing dependency, it will fail during compilation itself, rather than failing during runtime.
+
+## Common issues dealing with dependency injection
+1. Circular Dependency
+![](/images/circulardependency.png)
+
+### Solutions to it
