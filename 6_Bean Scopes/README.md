@@ -114,8 +114,8 @@ public class User {
 #### **Student.java**
 ```java
 @Component
+@Scope("prototype")
 public class Student {
-
     @Autowired
     User user;
 
@@ -134,10 +134,9 @@ public class Student {
 #### **TestController1.java**
 ```java
 @RestController
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@Scope("request")
 @RequestMapping(value = "/api/")
 public class TestController1 {
-
     @Autowired
     User user;
 
@@ -157,7 +156,8 @@ public class TestController1 {
 
     @GetMapping(path = "/fetchUser")
     public ResponseEntity<String> getUserDetails() {
-        return new ResponseEntity<>("Hi", HttpStatus.OK);
+        System.out.println("TestController1 api invoked");
+        return ResponseEntity.status(HttpStatus.OK).body("Success");
     }
 }
 ```
@@ -165,9 +165,8 @@ public class TestController1 {
 #### **User.java**
 ```java
 @Component
-@Scope("prototype")
+@Scope("request")
 public class User {
-
     public User() {
         System.out.println("User initialization");
     }
@@ -178,6 +177,77 @@ public class User {
     }
 }
 ```
+![](/images/beanscope2.png)
+after hitting the endpoint-->
+![](/images/beanscopes3.png)
 
+### **Request Scope**
+- A new object is created for each HTTP request.
+- Lazily initialized.
 
+#### **Student.java**
+```java
+@Component
+@Scope("prototype")
+public class Student {
+    @Autowired
+    User user;
 
+    public Student() {
+        System.out.println("Student instance initialization");
+    }
+
+    @PostConstruct
+    public void init() {
+        System.out.println("Student object hashCode: " + this.hashCode());
+        System.out.println("User object hashCode: " + user.hashCode());
+    }
+}
+```
+
+#### **TestController1.java**
+```java
+@RestController
+@Scope("request")
+@RequestMapping(value = "/api/")
+public class TestController1 {
+    @Autowired
+    User user;
+
+    @Autowired
+    Student student;
+
+    public TestController1() {
+        System.out.println("TestController1 instance initialization");
+    }
+
+    @PostConstruct
+    public void init() {
+        System.out.println("TestController1 object hashCode: " + this.hashCode());
+        System.out.println("User object hashCode: " + user.hashCode());
+        System.out.println("Student object hashCode: " + student.hashCode());
+    }
+
+    @GetMapping(path = "/fetchUser")
+    public ResponseEntity<String> getUserDetails() {
+        System.out.println("TestController1 api invoked");
+        return ResponseEntity.status(HttpStatus.OK).body("Success");
+    }
+}
+```
+
+#### **User.java**
+```java
+@Component
+@Scope("request")
+public class User {
+    public User() {
+        System.out.println("User initialization");
+    }
+
+    @PostConstruct
+    public void init() {
+        System.out.println("User object hashCode: " + this.hashCode());
+    }
+}
+```
