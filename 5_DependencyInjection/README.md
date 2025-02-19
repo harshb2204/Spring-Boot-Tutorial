@@ -416,8 +416,6 @@ public interface Order {
 #### OnlineOrder Implementation:
 
 ```java
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Component;
 
 @Primary
 @Component
@@ -432,7 +430,6 @@ public class OnlineOrder implements Order {
 #### OfflineOrder Implementation:
 
 ```java
-import org.springframework.stereotype.Component;
 
 @Component
 public class OfflineOrder implements Order {
@@ -446,8 +443,6 @@ public class OfflineOrder implements Order {
 #### User Class:
 
 ```java
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 @Component
 public class User {
@@ -464,3 +459,60 @@ public class User {
 ### Explanation:
 
 By marking the `OnlineOrder` implementation with `@Primary`, you tell Spring to prefer this implementation when injecting the `Order` dependency. This resolves the ambiguity and allows the application to start successfully.
+## Another Solution for UnsatisfiedDependencyException (Using @Qualifier)
+
+### Problem:
+
+When multiple beans implement the same interface, Spring finds two beans implementing the `Order` interface and doesn't know which to inject.
+
+### Code Snippets:
+
+#### User.java:
+
+```java
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+@Component
+public class User {
+    @Qualifier("offlineOrderName") // Specify the bean name
+    @Autowired
+    private Order order; // Now Spring knows which Order to inject
+
+    // Other methods...
+}
+```
+
+#### Order.java (Interface):
+
+```java
+public interface Order {}
+```
+
+#### OnlineOrder.java:
+
+```java
+import org.springframework.stereotype.Component;
+
+@Component("onlineOrderName") // Bean name
+public class OnlineOrder implements Order {
+    // Implementation details...
+}
+```
+
+#### OfflineOrder.java:
+
+```java
+import org.springframework.stereotype.Component;
+
+@Component("offlineOrderName") // Bean name
+public class OfflineOrder implements Order {
+    // Implementation details...
+}
+```
+
+### Explanation:
+
+The `@Qualifier("offlineOrderName")` annotation tells Spring to inject the `Order` bean named "offlineOrderName" (which is the `OfflineOrder` bean). This removes the ambiguity and resolves the `NoUniqueBeanDefinitionException`.
+When multiple beans implement the same interface, `@Qualifier` lets you specify which bean to inject by using its name (defined with `@Component("beanName")`). This effectively resolves the ambiguity in bean injection.
