@@ -516,3 +516,76 @@ public class OfflineOrder implements Order {
 
 The `@Qualifier("offlineOrderName")` annotation tells Spring to inject the `Order` bean named "offlineOrderName" (which is the `OfflineOrder` bean). This removes the ambiguity and resolves the `NoUniqueBeanDefinitionException`.
 When multiple beans implement the same interface, `@Qualifier` lets you specify which bean to inject by using its name (defined with `@Component("beanName")`). This effectively resolves the ambiguity in bean injection.
+
+Better way to dynamically initialize beans using @Qualifier annotation
+
+## Order Interface
+
+```java
+public interface Order {
+    public void createOrder();
+}
+```
+
+## OnlineOrder Class
+
+```java
+@Component
+@Qualifier("onlineOrderObject")
+public class OnlineOrder implements Order {
+
+    public OnlineOrder() {
+        System.out.println("Online Order Initialized");
+    }
+
+    public void createOrder() {
+        System.out.println("Created Online Order");
+    }
+}
+```
+
+## OfflineOrder Class
+
+```java
+@Component
+@Qualifier("offlineOrderObject")
+public class OfflineOrder implements Order {
+
+    public OfflineOrder() {
+        System.out.println("Offline Order Initialized");
+    }
+
+    public void createOrder() {
+        System.out.println("Created Offline Order");
+    }
+}
+```
+
+## OrderController Class (Illustrative)
+
+```java
+@RestController
+public class OrderController {
+
+    @Autowired
+    @Qualifier("onlineOrderObject")
+    private Order onlineOrder;
+
+    @Autowired
+    @Qualifier("offlineOrderObject")
+    private Order offlineOrder;
+
+    @GetMapping("/createOrder")
+    public String createOrder(@RequestParam("type") String type) {
+        if (type.equals("online")) {
+            onlineOrder.createOrder();
+            return "Online order created";
+        } else if (type.equals("offline")) {
+            offlineOrder.createOrder();
+            return "Offline order created";
+        } else {
+            return "Invalid order type";
+        }
+    }
+}
+```
