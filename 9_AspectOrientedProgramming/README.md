@@ -138,4 +138,29 @@ public class EmployeeUtil {
 }
 ```
 
+## @annotation
+Matches any method that is annotated with a given annotation.
+
+```java
+@RestController
+@RequestMapping(value = "/api/")
+public class Employee {
+    @GetMapping(path = "/fetchEmployee")
+    public String fetchEmployee() {
+        return "item fetched";
+    }
+}
+```
+
+```java
+@Aspect
+@Component
+public class LoggingAspect {
+    @Before("@annotation(org.springframework.web.bind.annotation.GetMapping)")
+    public void beforeMethod() {
+        System.out.println("inside beforeMethod Aspect");
+    }
+}
+```
+
 
