@@ -78,3 +78,30 @@ Application caching stores frequently accessed data and computed results closer 
 ### Common Implementations:
 - **Redis** – In-memory key-value store with persistence options.
 - **Memcached** – Lightweight, high-speed caching system for transient data.
+
+## Application Caching
+Application caching stores frequently accessed data and computed results closer to the application, reducing the need for repetitive database queries or complex calculations.
+
+## Caching Concepts
+
+### 1. Cache Hit and Cache Miss
+- **Cache Hit** – When requested data is found in the cache, it is served instantly, improving performance.
+- **Cache Miss** – When requested data is not in the cache, the system retrieves it from the database, adds it to the cache, and then serves it.
+
+### 2. Cache Eviction Policies
+Since cache storage is limited, older or less useful data must be removed to make space for new entries. Common eviction policies include:
+- **LRU (Least Recently Used)** – Removes the least recently accessed items first.
+- **LFU (Least Frequently Used)** – Removes the least frequently accessed items.
+- **FIFO (First In, First Out)** – Removes the oldest cached items first.
+- **TTL-Based Eviction** – Automatically removes items after a specified Time-to-Live (TTL) expires.
+
+### 3. Cache Expiry and TTL (Time-To-Live)
+- **Cache Expiry** – Cached data is removed after a defined period to prevent serving stale data.
+- **TTL** – A predefined time limit after which the cache entry is invalidated (e.g., 10 minutes for API responses).
+
+### 4. Cache Loading Strategies
+- **Lazy Loading** – Data is loaded into the cache only when requested (reduces memory usage but may cause initial latency).
+- **Eager Loading (Cache Warming)** – Preloads frequently used data into the cache before requests occur (improves speed but uses more memory).
+
+### 5. Cache Size and Capacity
+Cache size should be optimized based on system memory, workload, and access patterns. Proper configuration ensures high hit rates while avoiding excessive memory consumption.
