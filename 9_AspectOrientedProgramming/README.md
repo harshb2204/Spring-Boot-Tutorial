@@ -163,4 +163,50 @@ public class LoggingAspect {
 }
 ```
 
+## Args
+Matches any method with particular arguments (or parameters).
+```java
+@Before("args(String, int)")
+public void beforeMethod() {
+    System.out.println("inside beforeMethod aspect");
+}
+```
+
+### Example
+```java
+@RestController
+@RequestMapping(value = "/api/")
+public class Employee {
+    @Autowired
+    EmployeeUtil employeeUtil;
+
+    @GetMapping(path = "/fetchEmployee")
+    public String fetchEmployee() {
+        employeeUtil.employeeHelperMethod("xyz", 123);
+        return "item fetched";
+    }
+}
+```
+
+```java
+@Aspect
+@Component
+public class LoggingAspect {
+    @Before("args(String, int)")
+    public void beforeMethod() {
+        System.out.println("inside beforeMethod aspect");
+    }
+}
+```
+
+```java
+@Service
+public class EmployeeUtil {
+    public void employeeHelperMethod(String str, int val) {
+        System.out.println("employee helper method called");
+    }
+}
+```
+
+
 
