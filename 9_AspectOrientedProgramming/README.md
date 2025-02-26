@@ -433,3 +433,32 @@ public class EmployeeUtil {
 ```
 ## JoinPoint 
 Generally considered as a point where actual method invoation happens.
+
+## AOP Flow During Application Startup
+Let's understand the AOP flow to clarify how it works:
+
+1. **When Application startup happens:**
+   - Look for `@Aspect` annotation classes.
+   - Parse the Pointcut expression.
+     - Done by `PointcutParser.java` class.
+   - Stored in an efficient data structure or cache after parsing.
+   - Look for `@Component`, `@Service`, `@Controller`, etc., annotation classes.
+   - For each class, it checks if it's eligible for interception based on the pointcut expression.
+     - Done by `AbstractAutoProxyCreator.java` class.
+   - If eligible, it creates a Proxy using JDK Dynamic proxy or CGLIB proxy.
+     - This proxy class has code that executes advice before the method execution and after, if any.
+
+
+## JDK Dynamic Proxy vs CGLIB
+
+### JDK Dynamic Proxy
+- **Interface-based**: JDK Dynamic Proxy can only proxy classes that implement interfaces.
+- **Lightweight**: It is generally more lightweight and faster since it uses reflection to create proxy instances.
+- **Usage**: Commonly used when the target class implements one or more interfaces.
+
+### CGLIB (Code Generation Library)
+- **Class-based**: CGLIB can proxy classes regardless of whether they implement interfaces.
+- **Bytecode Generation**: It generates subclasses at runtime, which can lead to larger memory usage.
+- **Usage**: Useful when you need to proxy classes that do not implement any interfaces or when you want to enhance the performance of method calls.
+
+Both proxies allow for the implementation of cross-cutting concerns like logging, security, and transaction management in a clean and maintainable way.
