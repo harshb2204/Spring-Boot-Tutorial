@@ -30,3 +30,43 @@ Else
 END_TRANSACTION;
 
 In Spring Boot, we can use the `@Transactional` annotation to manage transactions declaratively. This annotation ensures that the methods it decorates are executed within a transaction context, providing automatic rollback in case of exceptions and simplifying transaction management.
+
+### @Transactional Annotation
+
+- **At Class Level**: 
+  - Transaction applied to all public methods.
+  
+  ```java
+  @Component
+  @Transactional
+  public class CarService {
+      public void updateCar() {
+          // this method will get executed within a transaction
+      }
+
+      public void updateBulkCars() {
+          // this method will get executed within a transaction
+      }
+
+      private void helperMethod() {
+          // this method will not get affected by Transactional annotation.
+      }
+  }
+  ```
+
+- **At Method Level**: 
+  - Transaction applied to a particular method only.
+  
+  ```java
+  @Component
+  public class CarService {
+      @Transactional
+      public void updateCar() {
+          // this method will get executed within a transaction
+      }
+
+      public void updateBulkCars() {
+          // this method will NOT be executed within a transaction
+      }
+  }
+  ```
