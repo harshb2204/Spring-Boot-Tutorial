@@ -87,3 +87,4 @@ Transaction Management in Spring Boot uses AOP:
      ```java
      invokeWithinTransaction method present in TransactionalInterceptor class.
      ```
+![](/images/transactional.png)
