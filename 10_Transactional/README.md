@@ -70,3 +70,20 @@ In Spring Boot, we can use the `@Transactional` annotation to manage transaction
       }
   }
   ```
+
+### Transaction Management in Spring Boot
+
+Transaction Management in Spring Boot uses AOP:
+
+1. **Pointcut Expression**: 
+   - Uses a pointcut expression to search for methods with the `@Transactional` annotation, like:
+     ```java
+     @within(org.springframework.transaction.annotation.Transactional)
+     ```
+
+2. **Advice Execution**: 
+   - Once the pointcut expression matches, it runs an "Around" type advice. 
+   - The advice is:
+     ```java
+     invokeWithinTransaction method present in TransactionalInterceptor class.
+     ```
