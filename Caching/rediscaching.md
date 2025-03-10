@@ -40,3 +40,4 @@ spring.data.redis.password=your-redis-password
 spring.data.redis.ssl.enabled=false
 ```
 
+
