@@ -40,4 +40,38 @@ spring.data.redis.password=your-redis-password
 spring.data.redis.ssl.enabled=false
 ```
 
+### 2. Configuring CacheManager
+```java
+@Bean
+    public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
+        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+                .prefixCacheNameWith("my-redis")
+                .entryTtl(Duration.ofSeconds(60))
+                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))
+                .enableTimeToIdle();
+
+
+        return RedisCacheManager.builder(redisConnectionFactory)
+                .cacheDefaults(redisCacheConfiguration)
+                .build();
+
+    }
+
+```    
+
+## Creating RedisCacheConfiguration
+- `defaultCacheConfig()`: Creates a default Redis cache configuration.
+- `.prefixCacheNameWith("my-redis")`: Adds "my-redis" as a prefix for all cache names.
+- `.entryTtl(Duration.ofSeconds(60))`: Sets a time-to-live (TTL) of 60 seconds for cached entries.
+- `.serializeKeysWith(...)`: Uses `StringRedisSerializer()` to serialize cache keys as plain strings (ensuring readability).
+- `.serializeValuesWith(...)`: Uses `GenericJackson2JsonRedisSerializer()` to serialize cache values in JSON format (allowing complex object storage).
+- `.enableTimeToIdle()`: Enables eviction of cache entries if they are not accessed within the TTL.
+
+## Creating RedisCacheManager
+- Uses `RedisConnectionFactory` to connect to Redis.
+- Applies the configured cache settings.
+- Returns a `RedisCacheManager` instance to handle caching.
+
+
 
