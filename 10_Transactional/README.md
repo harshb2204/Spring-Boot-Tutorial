@@ -293,6 +293,90 @@ public class UserProgrammaticApproach2 {
 }
 ```
 
+**Spring Transaction Propagation Types**
+
+When we try to create a new transaction, we first check the **PROPAGATION** value set, which determines whether a new transaction needs to be created.
+
+### **1. REQUIRED (Default Propagation)**
+```java
+@Transactional(propagation=Propagation.REQUIRED)
+if(parent txn present) {
+    Use it;
+} else {
+    Create new transaction;
+}
+```
+- If a parent transaction exists, it is used.
+- If there is no existing transaction, a new one is created.
+
+### **2. REQUIRED_NEW**
+```java
+@Transactional(propagation=Propagation.REQUIRED_NEW)
+if(parent txn present) {
+    Suspend the parent txn;
+    Create a new transaction and once finished;
+    Resume the parent txn;
+} else {
+    Create new transaction and execute the method;
+}
+```
+- Always creates a new transaction.
+- If a parent transaction exists, it is suspended while the new transaction runs.
+
+### **3. SUPPORTS**
+```java
+@Transactional(propagation=Propagation.SUPPORTS)
+if(parent txn present) {
+    Use it;
+} else {
+    Execute the method without any transaction;
+}
+```
+- If a transaction exists, it is used.
+- If no transaction exists, the method runs **without** a transaction.
+
+### **4. NOT_SUPPORTED**
+```java
+@Transactional(propagation=Propagation.NOT_SUPPORTED)
+if(parent txn present) {
+    Suspend the parent txn;
+    Execute the method without any transaction;
+    Resume the parent txn;
+} else {
+    Execute the method without any transaction;
+}
+```
+- If a transaction exists, it is **suspended** before execution.
+- Always runs the method **without** a transaction.
+
+### **5. MANDATORY**
+```java
+@Transactional(propagation=Propagation.MANDATORY)
+if(parent txn present) {
+    Use it;
+} else {
+    Throw exception;
+}
+```
+- Requires an existing transaction.
+- If no transaction is present, it throws an **exception**.
+
+### **6. NEVER**
+```java
+@Transactional(propagation=Propagation.NEVER)
+if(parent txn present) {
+    Throw exception;
+} else {
+    Execute the method without any transaction;
+}
+```
+- The method must **not** run within a transaction.
+- If a transaction exists, it throws an **exception**.
+
+Each propagation type serves a specific use case, ensuring precise control over transactional behavior in Spring applications.
+
+
+
 
 
 
