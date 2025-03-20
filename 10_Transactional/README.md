@@ -375,6 +375,41 @@ if(parent txn present) {
 
 Each propagation type serves a specific use case, ensuring precise control over transactional behavior in Spring applications.
 
+## Isolation Level
+
+Isolation level:
+It tells how the changes made by one transaction are visible to other transactions running in parallel.
+
+```java
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
+public void updateUser() {
+    // some operations here
+}
+```
+
+| Isolation Level      | Dirty Read Possible | Non-Repeatable Read Possible | Phantom Read Possible |
+|----------------------|---------------------|-------------------------------|-----------------------|
+| READ_UNCOMMITTED     | Yes                 | Yes                           | Yes                   |
+| READ_COMMITTED       | No                  | Yes                           | Yes                   |
+| REPEATABLE_COMMITTED  | No                  | No                            | Yes                   |
+| SERIALIZABLE         | No                  | No                            | No                    |
+
+**Concurrency High**  ↑  
+**Concurrency Low**   ↓
+
+## Dirty Read Problem
+
+Default isolation level depends upon the DB we are using. Like most relational databases use `READ_COMMITTED` as the default isolation, but it again depends upon the DB.
+
+Transaction A reads the un-committed data of another transaction. If the other transaction gets ROLLED BACK, the un-committed data which is read by Transaction A is known as Dirty Read.
+
+| Time | Transaction A | Transaction B | DB Status |
+|------|---------------|----------------|-----------|
+| T1   | BEGIN_TRANSACTION | BEGIN_TRANSACTION | Id: 123<br>Status: free |
+| T2   | Update Row<br>id:123<br>Status = booked |  | Id: 123<br>Status: booked<br>(Not Committed by Transaction B yet) |
+| T3   | Read Row<br>id:123<br>(Got status = booked) |  | Id: 123<br>Status: booked<br>(Not Committed by Transaction B yet) |
+| T4   |  | Rollback | Id: 123<br>Status: Free<br>(Un-committed changes of Txn B got Rolled Back) |
+
 
 
 
