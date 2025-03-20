@@ -435,6 +435,18 @@ If Transaction A executes the same query several times but there is a chance tha
 | T4   | Read Row where ID>0 and ID<5<br>(reads 3 rows ID:1, ID:2 and ID:3) | ID: 1<br>Status: Free<br>ID: 2<br>Status: Free<br>ID: 3<br>Status: Booked |
 | T5   | COMMIT |  |
 
+## DB Locking Types
+
+Locking ensures that no other transaction updates the locked rows.
+
+| Lock Type          | Another Shared Lock | Another Exclusive Lock |
+|--------------------|---------------------|------------------------|
+| Have Shared Lock (S) | Yes                 | No                     |
+| Have Exclusive Lock (X) | No                  | No                     |
+
+- Shared Lock (S) is also known as READ LOCK.
+- Exclusive Lock (X) is also known as WRITE LOCK.
+
 
 
 
