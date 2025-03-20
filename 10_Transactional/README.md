@@ -423,6 +423,18 @@ If Transaction A reads the same row several times and there is a chance that it 
 | T4   | Read Row ID:1<br>(reads status: Booked) | ID: 1<br>Status: Booked |
 | T5   | COMMIT |  |
 
+## Phantom Read Problem
+
+If Transaction A executes the same query several times but there is a chance that the rows returned are different, then it is known as the Phantom Read problem.
+
+| Time | Transaction A | DB |
+|------|---------------|----|
+| T1   | BEGIN_TRANSACTION | ID: 1<br>Status: Free<br>ID: 3<br>Status: Booked |
+| T2   | Read Row where ID>0 and ID<5<br>(reads 2 rows ID:1 and ID:3) | ID: 1<br>Status: Free<br>ID: 3<br>Status: Booked |
+| T3   |  | ID: 1<br>Status: Free<br>ID: 2<br>Status: Free<br>ID: 3<br>Status: Booked |
+| T4   | Read Row where ID>0 and ID<5<br>(reads 3 rows ID:1, ID:2 and ID:3) | ID: 1<br>Status: Free<br>ID: 2<br>Status: Free<br>ID: 3<br>Status: Booked |
+| T5   | COMMIT |  |
+
 
 
 
