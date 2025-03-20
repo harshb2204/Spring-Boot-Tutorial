@@ -396,7 +396,8 @@ public void updateUser() {
 
 **Concurrency High**  ↑  
 **Concurrency Low**   ↓
-
+- default isolation level depends upon the db we are using
+- read_commited is the default in most relational db.
 ## Dirty Read Problem
 
 Default isolation level depends upon the DB we are using. Like most relational databases use `READ_COMMITTED` as the default isolation, but it again depends upon the DB.
@@ -409,6 +410,18 @@ Transaction A reads the un-committed data of another transaction. If the other t
 | T2   | Update Row<br>id:123<br>Status = booked |  | Id: 123<br>Status: booked<br>(Not Committed by Transaction B yet) |
 | T3   | Read Row<br>id:123<br>(Got status = booked) |  | Id: 123<br>Status: booked<br>(Not Committed by Transaction B yet) |
 | T4   |  | Rollback | Id: 123<br>Status: Free<br>(Un-committed changes of Txn B got Rolled Back) |
+
+## Non-Repeatable Read Problem
+
+If Transaction A reads the same row several times and there is a chance that it gets a different value, then it is known as the Non-Repeatable Read problem.
+
+| Time | Transaction A | DB |
+|------|---------------|----|
+| T1   | BEGIN_TRANSACTION | ID: 1<br>Status: Free |
+| T2   | Read Row ID:1<br>(reads status: Free) | ID: 1<br>Status: Free |
+| T3   |  | ID: 1<br>Status: Booked |
+| T4   | Read Row ID:1<br>(reads status: Booked) | ID: 1<br>Status: Booked |
+| T5   | COMMIT |  |
 
 
 
