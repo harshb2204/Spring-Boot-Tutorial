@@ -447,6 +447,15 @@ Locking ensures that no other transaction updates the locked rows.
 - Shared Lock (S) is also known as READ LOCK.
 - Exclusive Lock (X) is also known as WRITE LOCK.
 
+## Locking Strategy by Isolation Level
+
+| ISOLATION LEVEL      | Locking Strategy                                      |
+|----------------------|------------------------------------------------------|
+| Read Uncommitted     | Read: No Lock acquired<br>Write: No Lock acquired    |
+| Read Committed       | Read: Shared Lock acquired and Released as soon as Read is done<br>Write: Exclusive Lock acquired and kept till the end of the transaction |
+| Repeatable Read      | Read: Shared Lock acquired and Released only at the end of the Transaction<br>Write: Exclusive Lock acquired and Released only at the end of the Transaction |
+| Serializable         | Same as Repeatable Read Locking Strategy + apply Range Lock and lock is released only at the end of the Transaction. |
+
 
 
 
