@@ -22,3 +22,11 @@ deployable services.
 - Managing transactions and consistency across services
 - Handling communication protocols (REST, gRPC, messaging)
 - Monitoring and Logging needs centralized monitoring and logging solutions
+
+## Why use Microservices
+- Scale services independently based on demand (e.g., scale only payment service during high traffic)
+- Services can be written in different programming languages, suited to specific tasks
+- Small teams can work on different services simultaneously, reducing time to market
+- Failure in one service doesn't bring down the entire system
+- Each service can be updated, deployed, and scaled independently
+- Teams can work on different services without affecting each other
