@@ -30,4 +30,21 @@ public class User {
 Important Meta Annotation properties:
 - **@Target**: Specifies where the annotation can be applied (methods, classes, constructors, etc.)
 
+Example of @Target usage:
+```java
+@Target(ElementType.METHOD)
+public @interface MyCustomAnnotation {
+}
+
+// Multiple targets
+@Target({ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
+public @interface MyCustomAnnotation {
+}
+```
+
+- **@Retention**: Specifies how the annotation will be stored in Java.
+  - `RetentionPolicy.SOURCE`: Annotation will be discarded by compiler itself and its not even recorded in .class file.
+  - `RetentionPolicy.CLASS`: Annotation will be recorded in .class file but ignored by JVM during run time.
+  - `RetentionPolicy.RUNTIME`: Annotation will be recorded in .class file and also available during run time.
+
 
