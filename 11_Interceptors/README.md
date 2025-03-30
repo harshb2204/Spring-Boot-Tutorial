@@ -78,4 +78,62 @@ public class User {
 }
 ```
 
+### Step 2: Creation of Custom Interceptor
+
+Here's an example of how to create and use a custom interceptor with annotations:
+
+```java
+// Controller class
+@RestController
+@RequestMapping(value = "/api/")
+public class UserController {
+    @Autowired
+    User user;
+
+    @GetMapping(path = "/getUser")
+    public String getUser(){
+        user.getUser();
+        return "success";
+    }
+}
+
+// Custom Annotation definition
+@Target({ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface MyCustomAnnotation {
+    String name() default "";
+}
+
+// Component class using the custom annotation
+@Component
+public class User {
+    @MyCustomAnnotation(name = "user")
+    public void getUser() {
+        System.out.println("get the user details");
+    }
+}
+```
+
+```java
+// Custom Interceptor implementation
+@Component
+@Aspect
+public class MyCustomInterceptor {
+    
+    @Around("@annotation(com.conceptandcoding.learningspringboot.CustomInterceptor.MyCustomAnnotation)") //pointcut expression
+    public void invoke(ProceedingJoinPoint joinPoint) throws Throwable { //advice
+        
+        System.out.println("do something before actual method");
+        
+        Method method = ((MethodSignature)joinPoint.getSignature()).getMethod();
+        if(method.isAnnotationPresent(MyCustomAnnotation.class)){
+            MyCustomAnnotation annotation = method.getAnnotation(MyCustomAnnotation.class);
+            System.out.println("name from annotation: " + annotation.name());
+        }
+        
+        joinPoint.proceed();
+        System.out.println("do something after actual method");
+    }
+}
+![](/images/interceptoroutput.png)
 
