@@ -146,3 +146,22 @@ It intercept the HTTP Request and Response, before they reach to the servlet.
 Its specific to Spring framework, and intercept HTTP Request and Response, before they reach to the Controller.
 
 ![](/images/filters.png)
+
+## What is Servlet
+A Servlet is nothing but a Java class, which accepts the incoming request, process it and returns the response.
+
+We can create multiple servlets like:
+- Servlet 1: can be configured to handle REST APIs
+- Servlet 2: can be configured to handle SOAP APIs etc...
+
+Similarly like this, "DispatcherServlet" is kind of servlet provided by spring, and by default its configured to handle all APIs "/*".
+
+
+
+### Filter:
+Is used when we want to intercept HTTP Request and Response and add logic agnostic of the underlying servlets.
+We can have many filters and have ordering between them too.
+
+### Interceptors:
+Is used when we want to intercept HTTP request and response and add logic specific to a particular servlet.
+We can have many Interceptors and have ordering between them too.
