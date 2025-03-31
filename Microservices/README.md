@@ -38,9 +38,9 @@ deployable services.
 ## What is Service Discovery
 - In a microservices architecture, each microservice is a standalone application with
 specific business functionality. Since these microservices need to communicate with
-each other to function as a complete application, they need to know each other’s
+each other to function as a complete application, they need to know each other's
 network locations. Service Discovery comes into play here, maintaining a record of
-these services’ locations, helping them find each other, and enabling
+these services' locations, helping them find each other, and enabling
 communication.
 
 ## Spring Cloud Eureka(developed by netflix)
@@ -52,3 +52,11 @@ Eureka Server. The Services that register in
 Eureka Server to obtain information about each
 other are called Eureka Clients.
 ![](/images/eureka.png)
+
+## Springboot: Filters Vs Interceptors
+
+### Filter:
+It intercept the HTTP Request and Response, before they reach to the servlet.
+
+### Interceptor:
+Its specific to Spring framework, and intercept HTTP Request and Response, before they reach to the Controller.

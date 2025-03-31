@@ -137,3 +137,12 @@ public class MyCustomInterceptor {
 }
 ![](/images/interceptoroutput.png)
 
+## Springboot: Filters Vs Interceptors
+
+### Filter:
+It intercept the HTTP Request and Response, before they reach to the servlet.
+
+### Interceptor:
+Its specific to Spring framework, and intercept HTTP Request and Response, before they reach to the Controller.
+
+![](/images/filters.png)
