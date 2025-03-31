@@ -30,3 +30,14 @@ deployable services.
 - Failure in one service doesn't bring down the entire system
 - Each service can be updated, deployed, and scaled independently
 - Teams can work on different services without affecting each other
+
+## Service Registery
+- It is a central location all microservices will be registered here, and they can connect with the service registery to get the address of other service
+
+## What is Service Discovery
+- In a microservices architecture, each microservice is a standalone application with
+specific business functionality. Since these microservices need to communicate with
+each other to function as a complete application, they need to know each other’s
+network locations. Service Discovery comes into play here, maintaining a record of
+these services’ locations, helping them find each other, and enabling
+communication.
