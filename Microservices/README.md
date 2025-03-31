@@ -31,8 +31,9 @@ deployable services.
 - Each service can be updated, deployed, and scaled independently
 - Teams can work on different services without affecting each other
 
-## Service Registery
+## Service Registry
 - It is a central location all microservices will be registered here, and they can connect with the service registery to get the address of other service
+![](/images/serviceregistery.png)
 
 ## What is Service Discovery
 - In a microservices architecture, each microservice is a standalone application with
@@ -41,3 +42,13 @@ each other to function as a complete application, they need to know each otherâ€
 network locations. Service Discovery comes into play here, maintaining a record of
 these servicesâ€™ locations, helping them find each other, and enabling
 communication.
+
+## Spring Cloud Eureka(developed by netflix)
+- Eureka is a REST based service which is
+primarily used for acquiring information about
+services that you would want to communicate
+with. This REST service is also known as
+Eureka Server. The Services that register in
+Eureka Server to obtain information about each
+other are called Eureka Clients.
+![](/images/eureka.png)
