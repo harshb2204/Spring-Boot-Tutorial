@@ -53,10 +53,21 @@ Eureka Server to obtain information about each
 other are called Eureka Clients.
 ![](/images/eureka.png)
 
-## Springboot: Filters Vs Interceptors
+// ... existing code ...
 
-### Filter:
-It intercept the HTTP Request and Response, before they reach to the servlet.
+## How Eureka Works
 
-### Interceptor:
-Its specific to Spring framework, and intercept HTTP Request and Response, before they reach to the Controller.
+### Service Registration
+A service registers itself with the Eureka Server upon startup.
+
+### Heartbeat
+The service sends heartbeats periodically to renew its lease with the Eureka Server.
+
+### Service Discovery
+Other services can query Eureka to discover the location (IP and port) of the registered service.
+
+### Health Check
+Eureka performs health checks to ensure that registered services are still healthy.
+
+### Eviction
+If a service stops sending heartbeats and its lease expires, the Eureka Server evicts it from the registry.
