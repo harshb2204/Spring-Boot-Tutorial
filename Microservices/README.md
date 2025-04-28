@@ -89,3 +89,14 @@ eureka.client.fetch-registry=false
 #let eureka client know where to find eureka server
 eureka.client.service.url.defaultZone=http://localhost:8761/eureka/
 ```
+
+## API Gateway
+
+APIs are a common way of communication between applications. In the case of microservice architecture, there will be a number of services and the client has to know the hostnames of all underlying applications to invoke them.
+
+To simplify this communication, we prefer a component between client and server to manage all API requests called API Gateway. Additionally, we can have other features which include:
+
+* **Security** - Authentication, authorization
+* **Routing** - routing, request/response manipulation, circuit breaker
+* **Observability** - metric aggregation, logging, tracing
+![](/images/apigateway.png)
