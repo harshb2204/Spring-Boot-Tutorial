@@ -53,7 +53,7 @@ Eureka Server to obtain information about each
 other are called Eureka Clients.
 ![](/images/eureka.png)
 
-// ... existing code ...
+
 
 ## How Eureka Works
 
@@ -71,3 +71,16 @@ Eureka performs health checks to ensure that registered services are still healt
 
 ### Eviction
 If a service stops sending heartbeats and its lease expires, the Eureka Server evicts it from the registry.
+
+## Configuring the eureka server
+- Add these config to your discovery service
+```properties 
+# do not register as client for eureka server
+eureka.client.register-with-eureka=false
+#do not fetch registry
+eureka.client.fetch-registry=false
+``` 
+- Add necessary dependencies in the pom as listed
+- eureka server dependency for the discovery service
+- eureka client dependency for other services
+- add spring cloud dependency management and its version in the pom
