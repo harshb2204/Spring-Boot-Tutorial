@@ -165,20 +165,3 @@ We can have many filters and have ordering between them too.
 ### Interceptors:
 Is used when we want to intercept HTTP request and response and add logic specific to a particular servlet.
 We can have many Interceptors and have ordering between them too.
-
-## How Eureka Works
-
-### Service Registration
-A service registers itself with the Eureka Server upon startup.
-
-### Heartbeat
-The service sends heartbeats periodically to renew its lease with the Eureka Server.
-
-### Service Discovery
-Other services can query Eureka to discover the location (IP and port) of the registered service.
-
-### Health Check
-Eureka performs health checks to ensure that registered services are still healthy.
-
-### Eviction
-If a service stops sending heartbeats and its lease expires, the Eureka Server evicts it from the registry.

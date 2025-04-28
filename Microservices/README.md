@@ -106,4 +106,93 @@ To simplify this communication, we prefer a component between client and server 
 Spring Cloud API Gateway is a powerful, flexible solution for routing and proxying requests to downstream services in a microservices architecture. It handles several important tasks like routing, filtering, authentication, and load balancing.
 ![](/images/springcloudapigateway.png)
 
+- create a spring project with gateway, eureka client dependencies
+
+## Spring Cloud Gateway Building Blocks
+
+Spring Cloud Gateway consists of 3 main building blocks:
+
+1. **Route**: The basic building block of the gateway. It consists of:
+   - ID: Unique identifier for the route
+   - URI: The destination URI where the request will be sent
+   - Predicates: Conditions that must be met to match the route
+   - Filters: Modify requests and responses before or after sending the downstream request
+
+2. **Predicate**: Conditions that must be true for the route to be matched. Predicates can be based on:
+   - Path
+   - Method
+   - Header
+   - Query Parameter
+   - Cookie
+   - Host
+   - Time
+
+3. **Filters**: Allow modification of requests and responses. They can:
+   - Add/Remove Headers
+   - Add/Remove Parameters
+   - Rewrite Paths
+   - Set Status
+   - Add Authentication
+   - Rate Limiting
+   - Circuit Breaking
+
+Example Configuration:
+```yaml
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: order-service
+        uri: lb://ORDER-SERVICE
+        predicates:
+        - Path=/api/v1/orders/**
+        filters:
+        - AddRequestHeader=X-Custom-Header, CustomValue
+      - id: inventory-service
+        uri: lb://INVENTORY-SERVICE
+        predicates:
+        - Path=/api/v1/inventory/**
+```
+
+## Spring Cloud Gateway Components in Detail
+
+### 1. Route
+Think of this as the destination that we want a particular request to route to. It comprises of destination URI, a condition that has to satisfy - or in terms of technical terms, Predicates, and one or more filters.
+
+### 2. Predicate
+This is literally a condition to match, i.e. kind of "if" condition. If requests has something - e.g. path=blah or request header contains foo-bar etc.
+
+Examples of Predicates:
+```yaml
+# Predicates with path
+- Path=/api/v1/orders/**
+
+# Predicates with Method
+- Method=GET
+
+# Predicates with Header
+- Header=User-Agent, Mozilla/*
+```
+
+### 3. Filter
+These are instances of Spring Framework WebFilter. This is where you can apply your magic of modifying request or response. There are quite a lot of out of box WebFilter that framework provides.
+
+Example Filters:
+```yaml
+filters:
+  # Add a request header
+  - AddRequestHeader=X-Request-Id, 12345
+  
+  # Add a response header
+  - AddResponseHeader=X-Response-id, abcd
+  
+  # Redirect to another URL
+  - RedirectTo=302, https://youtube.com
+  
+  # Strip prefix from path
+  - StripPrefix=1
+  
+  # Remove a request header
+  - RemoveRequestHeader=Cookie
+```
 
