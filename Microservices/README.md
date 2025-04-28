@@ -84,3 +84,8 @@ eureka.client.fetch-registry=false
 - eureka server dependency for the discovery service
 - eureka client dependency for other services
 - add spring cloud dependency management and its version in the pom
+- Add these config to your other services
+```properties
+#let eureka client know where to find eureka server
+eureka.client.service.url.defaultZone=http://localhost:8761/eureka/
+```
