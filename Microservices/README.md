@@ -100,3 +100,10 @@ To simplify this communication, we prefer a component between client and server 
 * **Routing** - routing, request/response manipulation, circuit breaker
 * **Observability** - metric aggregation, logging, tracing
 ![](/images/apigateway.png)
+
+## Spring Cloud API Gateway
+
+Spring Cloud API Gateway is a powerful, flexible solution for routing and proxying requests to downstream services in a microservices architecture. It handles several important tasks like routing, filtering, authentication, and load balancing.
+![](/images/springcloudapigateway.png)
+
+
