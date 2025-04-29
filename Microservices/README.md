@@ -196,3 +196,65 @@ filters:
   - RemoveRequestHeader=Cookie
 ```
 
+## Spring Cloud Open Feign
+
+Spring Cloud OpenFeign is a declarative HTTP client library for building RESTful microservices. It integrates seamlessly with Spring Cloud and simplifies the development of HTTP clients by allowing you to create interfaces that resemble the API of the target service. It abstracts away much of the boilerplate code typically associated with making HTTP requests, making your codebase cleaner and more maintainable.
+
+### Adding OpenFeign Dependency
+
+To use Spring Cloud OpenFeign, add the following dependency to your `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-openfeign</artifactId>
+</dependency>
+```
+
+### Using OpenFeign
+
+Here's an example of how to use OpenFeign in your microservices:
+
+1. First, create a Feign client interface:
+
+```java
+@FeignClient(name = "order-service", path = "/orders")
+public interface OrdersFeinClient {
+    @GetMapping("/core/helloOrders")
+    String helloOrders();
+}
+```
+
+2. Use the Feign client in your controller:
+
+```java
+@RestController
+public class InventoryController {
+    private final RestClient restClient;
+    private final OrdersFeinClient ordersFeinClient;
+
+    @GetMapping("/fetchOrders")
+    public String fetchFromOrderService(HttpServletRequest httpServletRequest) {
+        log.info(httpServletRequest.getHeader("x-custom-header"));
+        
+        // Using Feign client instead of manual RestClient
+        return ordersFeinClient.helloOrders();
+        
+        /* Alternative approach using RestClient:
+        ServiceInstance orderService = discoveryClient.getInstances("order-service").getFirst();
+        String response = restClient.get()
+            .uri(orderService.getUri()+ "/orders/core/helloOrders")
+            .retrieve()
+            .body(String.class);
+        return response;
+        */
+    }
+}
+```
+
+The example above demonstrates how OpenFeign simplifies HTTP client code by:
+- Declaring the API endpoint using annotations
+- Automatically handling service discovery through the service name
+- Eliminating boilerplate code for making HTTP requests
+- Providing a clean, interface-based approach to defining API clients
+
