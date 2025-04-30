@@ -258,3 +258,22 @@ The example above demonstrates how OpenFeign simplifies HTTP client code by:
 - Eliminating boilerplate code for making HTTP requests
 - Providing a clean, interface-based approach to defining API clients
 
+## Eureka Instance Configuration
+
+When services register with Eureka, they may face issues with hostname resolution, especially in Windows or Docker environments. By default, Eureka uses the machine's hostname (e.g., LAPTOP-XXXX.mshome.net) for registration, which can cause problems with service discovery.
+
+To ensure proper service discovery and communication between services (especially for API Gateway and OpenFeign clients), add the following configuration to your service's `application.yml` or `application.properties`:
+
+```yaml
+eureka:
+  instance:
+    prefer-ip-address: true
+```
+
+Or in `.properties` format:
+```properties
+eureka.instance.prefer-ip-address=true
+```
+
+This configuration tells Eureka to register services using their IP addresses instead of hostnames, which helps resolve common service discovery issues and ensures that Feign clients and load balancers work correctly.
+
