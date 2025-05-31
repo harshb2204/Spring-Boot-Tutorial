@@ -321,3 +321,55 @@ resilience4j:
         timeoutDuration: 1s       # Time to wait for permission before a request fails
 ```
 
+## Circuit Breaker
+
+A Circuit Breaker is a resilience pattern that prevents a system from repeatedly trying to execute an operation that's likely to fail, allowing it to recover gracefully. It acts like an electrical circuit breaker: when failures reach a certain threshold, the circuit "opens" and blocks further attempts for a period of time. This helps avoid overwhelming a failing service and gives it time to recover.
+
+### States of a Circuit Breaker:
+- **Closed:** Requests flow as normal. If failures reach a threshold, the circuit transitions to Open.
+- **Open:** Requests are immediately failed/skipped. After a timeout, the circuit transitions to Half Open.
+- **Half Open:** Allows a limited number of test requests. If they succeed, the circuit closes; if they fail, it opens again.
+
+Below is a typical state diagram for a circuit breaker:
+
+![](/images/circuitbreaker.png)
+
+
+You can visualize it like an electrical switch: when the circuit is closed, current (requests) flows; when open, it stops.
+
+### Circuit Breaker using Resilience4j
+
+You can implement the Circuit Breaker pattern in your Spring Boot application using Resilience4j's `@CircuitBreaker` annotation. This allows you to specify a fallback method when the circuit is open or a failure occurs.
+
+```java
+@CircuitBreaker(name = "inventoryFeignClient", fallbackMethod = "fallBackMethodReduceOrder")
+```
+
+Below is an example configuration for a circuit breaker instance in `application.yml`:
+
+```yaml
+resilience4j:
+  circuitbreaker:
+    instances:
+      inventoryFeignClient:
+        register-health-indicator: true
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10000
+        permitted-number-of-calls-in-half-open-state: 5
+        sliding-window-type: COUNT_BASED
+        minimum-number-of-calls: 5
+        automatic-transition-from-open-to-half-open-enabled: true
+```
+
+**Explanation of key configuration options:**
+- `register-health-indicator`: Enables health monitoring for this circuit breaker.
+- `sliding-window-size`: Number of calls to consider for the failure rate calculation.
+- `failure-rate-threshold`: Percentage of failures to open the circuit (e.g., 50%).
+- `wait-duration-in-open-state`: Time (ms) the circuit stays open before transitioning to half-open.
+- `permitted-number-of-calls-in-half-open-state`: Number of test calls allowed in half-open state.
+- `sliding-window-type`: Can be `COUNT_BASED` or `TIME_BASED`.
+- `minimum-number-of-calls`: Minimum number of calls before calculating failure rate.
+- `automatic-transition-from-open-to-half-open-enabled`: Automatically transitions to half-open after the wait duration.
+
+
