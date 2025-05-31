@@ -277,3 +277,47 @@ eureka.instance.prefer-ip-address=true
 
 This configuration tells Eureka to register services using their IP addresses instead of hostnames, which helps resolve common service discovery issues and ensures that Feign clients and load balancers work correctly.
 
+# Resilience4J
+
+Resilience4j is a lightweight, standalone library designed for implementing resilience patterns in Java applications, particularly those using microservices architecture. It provides mechanisms to handle failures gracefully and ensures that services remain responsive under failure conditions. It's Key features are:
+
+- Retry
+- Rate Limiter
+- Circuit Breaker
+- Integration with Spring Boot:
+
+## Retry
+
+Resilience4J can help write logic for retry when a service call fails. This retries failed operations a certain number of times before giving up.
+
+```java
+@Retry(name = "inventoryRetry", fallbackMethod = "fallBackMethodReduceOrder")
+```
+
+```yaml
+resilience4j:
+  retry:
+    configs:
+      default:
+        maxRetryAttempts: 3
+        waitDuration: 5s
+```
+
+## Rate Limiter
+
+Controls the rate of requests to a service by limiting the number of calls allowed during a specific time period.
+
+```java
+@RateLimiter(name = "inventoryRateLimiter", fallbackMethod = "fallBackMethodReduceOrder")
+```
+
+```yaml
+resilience4j:
+  ratelimiter:
+    configs:
+      default:
+        limitForPeriod: 1         # Max 1 call in a refresh period
+        limitRefreshPeriod: 5s    # Refresh the limit every 5 seconds
+        timeoutDuration: 1s       # Time to wait for permission before a request fails
+```
+
