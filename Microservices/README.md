@@ -372,7 +372,7 @@ resilience4j:
 - `minimum-number-of-calls`: Minimum number of calls before calculating failure rate.
 - `automatic-transition-from-open-to-half-open-enabled`: Automatically transitions to half-open after the wait duration.
 
-## API Gateway Filters
+# API Gateway Filters
 
 API Gateway filters are used to intercept, modify, and enhance requests and responses that pass through an API Gateway. They allow you to apply common cross-cutting concerns (such as authentication, logging, rate limiting, and transformation) at a centralized entry point before routing requests to microservices. There are two types of filters:
 
@@ -422,46 +422,43 @@ To implement a `GatewayFilter`, we'll have to extend from the `AbstractGatewayFi
 
 ### Example: Custom Route Filter
 
+
+Here's a simple example of a route-specific filter that logs a message for each request:
+
 ```java
 @Component
-public class CustomHeaderGatewayFilterFactory extends AbstractGatewayFilterFactory<CustomHeaderGatewayFilterFactory.Config> {
-    public CustomHeaderGatewayFilterFactory() {
-        super(Config.class);
+public class SimpleLogGatewayFilterFactory extends AbstractGatewayFilterFactory<Object> {
+    private static final Logger logger = LoggerFactory.getLogger(SimpleLogGatewayFilterFactory.class);
+
+    public SimpleLogGatewayFilterFactory() {
+        super(Object.class);
     }
 
     @Override
-    public GatewayFilter apply(Config config) {
+    public GatewayFilter apply(Object config) {
         return (exchange, chain) -> {
-            exchange.getRequest().mutate()
-                .header("X-Custom-Header", config.headerValue)
-                .build();
+            logger.info("Request received at: {}", exchange.getRequest().getURI());
             return chain.filter(exchange);
         };
-    }
-
-    public static class Config {
-        private String headerValue;
-        // getters and setters
-        public String getHeaderValue() { return headerValue; }
-        public void setHeaderValue(String headerValue) { this.headerValue = headerValue; }
     }
 }
 ```
 
-You can then use this filter in your `application.yml` route configuration like this:
+And in your `application.yml`:
 
 ```yaml
 spring:
   cloud:
     gateway:
       routes:
-        - id: custom-header-route
+        - id: log-route
           uri: http://example.org
           filters:
-            - CustomHeader=X-Value-From-Config
+            - SimpleLog
 ```
 
-![](../images/filters.png)
+
+
 
 
 
