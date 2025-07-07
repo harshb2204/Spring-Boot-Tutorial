@@ -372,4 +372,98 @@ resilience4j:
 - `minimum-number-of-calls`: Minimum number of calls before calculating failure rate.
 - `automatic-transition-from-open-to-half-open-enabled`: Automatically transitions to half-open after the wait duration.
 
+## API Gateway Filters
+
+API Gateway filters are used to intercept, modify, and enhance requests and responses that pass through an API Gateway. They allow you to apply common cross-cutting concerns (such as authentication, logging, rate limiting, and transformation) at a centralized entry point before routing requests to microservices. There are two types of filters:
+
+1. Global Filters
+2. Route specific Filters
+
+![](../images/gatewayfilters.png)
+
+## Global Filter
+
+All we have to do to create a custom global filter is to implement the Spring Cloud Gateway `GlobalFilter` interface, and add it to the context as a bean.
+
+```java
+@Component
+public class FirstPreLastPostGlobalFilter implements GlobalFilter, Ordered {
+    final Logger logger = LoggerFactory.getLogger(FirstPreLastPostGlobalFilter.class);
+
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        logger.info("First Pre Global Filter");
+        return chain.filter(exchange)
+            .then(Mono.fromRunnable(() -> {
+                logger.info("Last Post Global Filter");
+            }));
+    }
+
+    @Override
+    public int getOrder() {
+        return -1;
+    }
+}
+```
+
+This code defines a custom global filter for Spring Cloud Gateway:
+- `@Component` registers the filter as a Spring bean so it is picked up automatically.
+- The class implements both `GlobalFilter` (to define filter logic) and `Ordered` (to specify filter execution order).
+- The `filter` method logs a message before and after the request is processed by the rest of the filter chain:
+    - "First Pre Global Filter" is logged before passing the request down the chain.
+    - "Last Post Global Filter" is logged after the response comes back up the chain.
+- The `getOrder()` method returns `-1`, which determines the order in which this filter runs relative to other filters (lower values have higher precedence).
+
+## Route Specific Filters
+
+Global filters are quite useful, but we often need to execute fine-grained custom Gateway filter operations that apply to only some routes. These are called route specific filters.
+
+To implement a `GatewayFilter`, we'll have to extend from the `AbstractGatewayFilterFactory` class provided by Spring Cloud Gateway.
+
+### Example: Custom Route Filter
+
+```java
+@Component
+public class CustomHeaderGatewayFilterFactory extends AbstractGatewayFilterFactory<CustomHeaderGatewayFilterFactory.Config> {
+    public CustomHeaderGatewayFilterFactory() {
+        super(Config.class);
+    }
+
+    @Override
+    public GatewayFilter apply(Config config) {
+        return (exchange, chain) -> {
+            exchange.getRequest().mutate()
+                .header("X-Custom-Header", config.headerValue)
+                .build();
+            return chain.filter(exchange);
+        };
+    }
+
+    public static class Config {
+        private String headerValue;
+        // getters and setters
+        public String getHeaderValue() { return headerValue; }
+        public void setHeaderValue(String headerValue) { this.headerValue = headerValue; }
+    }
+}
+```
+
+You can then use this filter in your `application.yml` route configuration like this:
+
+```yaml
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: custom-header-route
+          uri: http://example.org
+          filters:
+            - CustomHeader=X-Value-From-Config
+```
+
+![](../images/filters.png)
+
+
+
+
 
