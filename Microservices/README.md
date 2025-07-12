@@ -499,8 +499,8 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/Anuj-Kumar-Sharma/ecommerce-config-server
-          username: anuj-kumar-sharma
+          uri: https://github.com/..
+          username: <username>
           password: <your-github-token>
           default-label: master
 
@@ -514,6 +514,11 @@ eureka:
 ```
 
 Replace `<your-github-token>` with your actual GitHub personal access token. This configuration connects your config server to a GitHub repository, sets the server port, and registers the config server with Eureka for service discovery.
+
+
+- You create a .properties file in the github with the name of the service and paste config there from the application
+- Then you make the service a config client by adding the spring config client dependency
+- Then add spring.config.import= configserver:http://localhost:8888 in the service properties
 
 
 
