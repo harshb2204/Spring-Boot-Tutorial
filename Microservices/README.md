@@ -457,6 +457,65 @@ spring:
             - SimpleLog
 ```
 
+# Centralized Config Server
+
+Config Server is a dedicated service that acts as a centralized repository, allowing all microservices to retrieve their configurations dynamically at runtime.
+
+Config Server can manage different environments (e.g., dev, test, prod) and profiles. This means that each environment can have its own set of properties (e.g., different databases or API keys).
+
+![Centralized Config Server](../images/config%20server.png)
+
+
+
+
+## Setting Up a Spring Cloud Config Server
+
+A Spring Cloud Config Server allows you to manage external properties for applications across all environments in a central place. It typically fetches configuration files from a remote repository (like GitHub), making it easy to update and manage configuration for multiple microservices.
+
+### Steps
+- Create a Spring Boot application and add `@EnableConfigServer` to the main class.
+- Create a GitHub repository to store your configuration files.
+- Add the `application.yml` (or `.properties`) file(s) for your services in this repo.
+- Copy the repository URL.
+- Create a GitHub API token: Go to Settings → Developer Settings → Personal Access Tokens → Generate new token, select the `repo` scope, and define the necessary permissions.
+
+
+
+
+
+
+
+
+
+
+```
+
+### Example `application.yml` for Config Server
+
+```yaml
+spring:
+  application.name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/Anuj-Kumar-Sharma/ecommerce-config-server
+          username: anuj-kumar-sharma
+          password: <your-github-token>
+          default-label: master
+
+server:
+  port: 8888
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+```
+
+Replace `<your-github-token>` with your actual GitHub personal access token. This configuration connects your config server to a GitHub repository, sets the server port, and registers the config server with Eureka for service discovery.
+
+
 
 
 
