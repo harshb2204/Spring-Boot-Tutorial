@@ -580,3 +580,28 @@ management:
 Behind the scenes, Spring creates a proxy for the bean, and when a refresh is triggered, Spring will replace the existing bean instance with a new one using the updated configuration values.
 
 The scope only applies to beans that are explicitly marked with `@RefreshScope`. This ensures that only the necessary beans are reloaded upon configuration changes, minimizing the overhead associated with reinitializing the entire application context.
+
+```
+
+# Distributed Tracing
+
+Distributed tracing is a technique that tracks requests as they move through a distributed system, such as a microservices environment or cloud native architecture. It helps developers understand how requests are handled across multiple applications, services, and databases.
+
+![](/images/distrbutedtracing.png)
+
+
+```
+
+# Micrometer
+
+Micrometer is a tool that helps you see how well your microservices are working. It makes it easy to collect and send information (called metrics) about your application to popular monitoring systems.
+
+Micrometer works with many different tools, like Amazon Cloud Watch, Elastic, Prometheus, and Zipkin. It helps you watch, alert, and react to how your system is doing right now, so you can keep your services healthy and fix problems quickly.
+
+```
+
+# Zipkin
+
+Zipkin is a tool that helps developers trace requests across different parts of a distributed system. Think of it as a way to see the path a request takes as it moves between different microservices. This can be really useful for understanding how long it takes for requests to be processed, where bottlenecks are, and what might be causing problems.
+
+```
