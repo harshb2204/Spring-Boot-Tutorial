@@ -528,3 +528,55 @@ Replace `<your-github-token>` with your actual GitHub personal access token. Thi
 
 
 
+
+```
+
+# Refresh Scope
+
+`@RefreshScope` is a Spring Cloud annotation used to enable dynamic refreshing of Spring-managed beans, allowing certain configurations in an application to be updated at runtime without the need to restart the application. It is commonly used in conjunction with Spring Cloud Config, which provides externalized configuration management for distributed systems. Key features are:
+
+- Dynamic Bean Refresh
+- Avoiding restarts
+- Actuator support for refreshing
+
+
+
+
+
+
+
+
+
+
+```
+
+# Enable Actuator Endpoint
+
+The `/refresh` endpoint in Spring Boot, provided by Spring Cloud Actuator, is used to dynamically refresh the configuration properties of a running application without restarting it.
+
+For the POST `/actuator/refresh` to work, we need to enable the refresh actuator endpoint.
+
+```yaml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh   # Enable refresh endpoint
+```
+
+
+
+
+
+
+
+
+
+
+```
+
+# How does it work
+
+Behind the scenes, Spring creates a proxy for the bean, and when a refresh is triggered, Spring will replace the existing bean instance with a new one using the updated configuration values.
+
+The scope only applies to beans that are explicitly marked with `@RefreshScope`. This ensures that only the necessary beans are reloaded upon configuration changes, minimizing the overhead associated with reinitializing the entire application context.
