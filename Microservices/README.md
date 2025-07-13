@@ -1,4 +1,4 @@
-# Microservices
+ Microservices
 
 - Microservices are an architectural style where applications are
 developed as a collection of small, loosely coupled, independently
@@ -482,12 +482,6 @@ A Spring Cloud Config Server allows you to manage external properties for applic
 
 
 
-
-
-
-
-
-
 ```
 
 ### Example `application.yml` for Config Server
@@ -573,7 +567,7 @@ management:
 
 
 
-```
+
 
 # How does it work
 
@@ -581,7 +575,6 @@ Behind the scenes, Spring creates a proxy for the bean, and when a refresh is tr
 
 The scope only applies to beans that are explicitly marked with `@RefreshScope`. This ensures that only the necessary beans are reloaded upon configuration changes, minimizing the overhead associated with reinitializing the entire application context.
 
-```
 
 # Distributed Tracing
 
@@ -590,7 +583,6 @@ Distributed tracing is a technique that tracks requests as they move through a d
 ![](/images/distrbutedtracing.png)
 
 
-```
 
 # Micrometer
 
@@ -598,10 +590,183 @@ Micrometer is a tool that helps you see how well your microservices are working.
 
 Micrometer works with many different tools, like Amazon Cloud Watch, Elastic, Prometheus, and Zipkin. It helps you watch, alert, and react to how your system is doing right now, so you can keep your services healthy and fix problems quickly.
 
-```
+
 
 # Zipkin
 
 Zipkin is a tool that helps developers trace requests across different parts of a distributed system. Think of it as a way to see the path a request takes as it moves between different microservices. This can be really useful for understanding how long it takes for requests to be processed, where bottlenecks are, and what might be causing problems.
 
+
+
+
+# Centralized Logging with ELK Stack
+
+## Why Centralized Logging?
+
+While Zipkin is an excellent tool for distributed tracing and observing request paths through microservices, it doesn't offer deep log analysis. ELK Stack complements tracing tools like Zipkin by offering:
+
+- Deep log analysis and insights across microservices.
+- Long-term storage and powerful search capabilities.
+- Real-time monitoring and alerting.
+- Centralized view of logs for easier debugging and troubleshooting.
+
+![ELK Stack Logging Architecture](../images/elkstack.png)
+
+The diagram above shows how centralized logging works with the ELK stack in a Spring Boot microservices environment:
+
+- **Spring Boot Application**: Generates log files during operation.
+- **Logstash**: Collects and processes log files from the application, using a configuration file to parse and forward logs.
+- **Elasticsearch**: Stores and indexes the logs received from Logstash, making them searchable.
+- **Kibana**: Connects to Elasticsearch to visualize and analyze the logs, providing dashboards and search capabilities for monitoring and troubleshooting.
+
+This setup enables efficient, centralized log management and analysis across all your microservices.
+
+
+
+
+
+
+# The ELK Stack
+
+ELK is a collection of three open-source applications – Elasticsearch, Logstash, and Kibana from Elastic that accepts data from any source or format, on which you can then perform *search*, *analysis*, and *visualize* that data.
+
+1. **Elasticsearch** – Elasticsearch stores and indexes the data. It is a NoSQL database based on Lucene's open-source search engine. Since Elasticsearch is developed using Java, therefore, it can run on different platforms. One particular aspect where it excels is indexing streams of data such as logs.
+
+2. **Logstash** – Logstash is a tool that integrates with a variety of deployments. It is used to collect, parse, transform, and buffer data from a variety of sources. The data collected by Logstash can be shipped to one or more targets like Elasticsearch.
+
+3. **Kibana** – Kibana acts as an analytics and visualization layer on top of Elasticsearch. Kibana can be used to search, view, and interpret the data stored in Elasticsearch.
+
+# Logback Configuration for Microservices
+
+Logback is a logging framework for Java applications that provides flexible and powerful logging capabilities. In microservices architecture, proper logging configuration is crucial for debugging, monitoring, and tracing requests across services.
+
+## Logback Configuration Example
+
+Here's a comprehensive Logback configuration that can be used in your microservices:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <springProperty name="applicationName" source="spring.application.name" defaultValue="UNKNOWN"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] [%X{traceId}-%X{spanId}] %-5level ${applicationName}-%logger{36}.%M - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="ROLLING-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- Trigger for rolling logs every day and limit size to 10 MB -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- rollover daily -->
+            <fileNamePattern>logs/${applicationName}/application-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <!-- keep 30 days' worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] [%X{traceId}-%X{spanId}] %-5level ${applicationName}-%logger{36}.%M - %msg%n</Pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="ROLLING-FILE" />
+    </root>
+</configuration>
 ```
+
+## Configuration Breakdown
+
+### Spring Property Integration
+- `<springProperty name="applicationName" source="spring.application.name" defaultValue="UNKNOWN"/>` - Extracts the application name from Spring Boot's `spring.application.name` property, defaulting to "UNKNOWN" if not set.
+
+### Console Appender (STDOUT)
+- Outputs logs to the console/terminal
+- Useful for development and debugging
+- Pattern includes timestamp, thread, trace/span IDs, log level, application name, logger name, method name, and message
+
+### Rolling File Appender
+- **Rolling Policy**: Combines time-based (daily) and size-based (10MB) rolling
+- **File Pattern**: `logs/${applicationName}/application-%d{yyyy-MM-dd}.%i.log`
+  - Creates separate log directories for each service
+  - Daily rotation with date in filename
+  - Size-based rotation with index suffix
+- **Retention**: Keeps 30 days of log history
+- **Size Limit**: Maximum 10MB per log file
+
+### Log Pattern Components
+- `%d{dd-MM-yyyy HH:mm:ss.SSS}` - Timestamp with milliseconds
+- `[%thread]` - Thread name
+- `[%X{traceId}-%X{spanId}]` - Distributed tracing IDs (for correlation across services)
+- `%-5level` - Log level (INFO, DEBUG, ERROR, etc.)
+- `${applicationName}` - Service name from Spring properties
+- `%logger{36}` - Logger name (truncated to 36 characters)
+- `%M` - Method name where log was called
+- `%msg` - Actual log message
+- `%n` - New line
+
+## Benefits for Microservices
+
+1. **Service Identification**: Each service's logs are clearly identified by the application name
+2. **Distributed Tracing**: Trace and span IDs help correlate requests across services
+3. **Structured Logging**: Consistent format across all services
+4. **Log Management**: Automatic rotation prevents disk space issues
+5. **Debugging**: Method names help identify where logs originate
+6. **ELK Integration**: This format works well with ELK stack for centralized logging
+
+## Usage
+
+Place this configuration in `src/main/resources/logback-spring.xml` in your Spring Boot microservice. The configuration will automatically be picked up by Spring Boot's logging system.
+
+# Logstash Configuration Example for Spring Boot Logs
+
+Below is a sample Logstash configuration for ingesting Spring Boot log files (created by Logback) and forwarding them to Elasticsearch for centralized logging and analysis:
+
+```conf
+input {
+  file {
+    type => "log"
+    path => "/Users/../*/application-*.log"
+    start_position => "beginning"
+  }
+}
+
+output {
+  stdout {
+    codec => rubydebug
+  }
+
+  elasticsearch {
+    hosts => [ "https://localhost:9200" ]
+    index => "spring-boot-logs-%{+YYYY.MM.dd}"
+    ssl_certificate_verification => false
+    user => "elastic"
+    password => "*EiNvi2tnHkka9eb287W"
+  }
+}
+```
+
+
+**Note:**
+- Update the `path` to match your actual log file location on your server.
+- Replace the Elasticsearch `user` and `password` with your own credentials.
+- This configuration works seamlessly with the Logback setup described above, enabling centralized log aggregation and search with the ELK stack.
+- Save in logstash and run it bin\logstash -f logstash.conf
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
